@@ -1,32 +1,32 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Импортируем хук
-import nav from '../assets/images/menu-btn.svg';
-import '../assets/style/style.css';
+import { useAuth } from './AuthContext';
 
 function Header() {
-  const { token, logout } = useAuth(); // Проверяем, вошел ли пользователь
+  const { token, logout } = useAuth();
 
   return (
-    <div className="header">
-      <nav className="header-nav">
-        <Link to="/">
-          <img src={nav} alt="Home" />
+    <header className="header">
+      <div className="container">
+        <Link to="/" className="logo-container">
+          <div className="logo-icon">M</div>
+          <span className="site-name">Mokky<span>News</span></span>
         </Link>
-      </nav>
 
-      <div className="auth-buttons">
-        {token ? (
-          // Если токен есть — показываем кнопку выхода
-          <button onClick={logout} className="header-btn">Выйти</button>
-        ) : (
-          // Если токена нет — ссылки на вход и регистрацию
-          <>
-            <Link to="/login" className="header-btn">Войти</Link>
-            <Link to="/register" className="header-btn">Регистрация</Link>
-          </>
-        )}
+        <nav>
+          {token ? (
+            <>
+              <Link to="/favorites" className="header-btn login-link">Избранное</Link>
+              <button onClick={logout} className="header-btn register-btn">Выйти</button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="header-btn login-link">Войти</Link>
+              <Link to="/register" className="header-btn register-btn">Регистрация</Link>
+            </>
+          )}
+        </nav>
       </div>
-    </div>
+    </header>
   );
 }
 export default Header;

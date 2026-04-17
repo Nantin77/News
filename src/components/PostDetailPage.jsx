@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react"; // 1. Добавили useCallback
 import { useParams } from "react-router-dom";
 import '../assets/style/style.css';
 
@@ -11,15 +11,15 @@ function PostDetailPage() {
 
     const API_BASE = "https://025b6c4a7c389b55.mokky.dev";
 
-    // Функция для получения комментариев
-    const fetchComments = async () => {
+    // 2. Оборачиваем функцию в useCallback, чтобы она была стабильной
+    const fetchComments = useCallback(async () => {
         try {
             const res = await axios.get(`${API_BASE}/comments?postId=${id}`);
             setComments(res.data);
         } catch (err) {
             console.error("Ошибка загрузки комментариев:", err);
         }
-    };
+    }, [id]); // Функция обновится только если изменится id поста
 
     useEffect(() => {
         // Загрузка основной новости
@@ -28,7 +28,7 @@ function PostDetailPage() {
             .catch(err => console.error("Ошибка загрузки поста:", err));
         
         fetchComments();
-    }, [id]);
+    }, [id, fetchComments]); // 3. Теперь fetchComments можно безопасно добавить в зависимости
 
     const addComment = async () => {
         if (!text.trim()) return;
@@ -39,8 +39,8 @@ function PostDetailPage() {
                 text: text,
                 date: new Date().toLocaleDateString()
             });
-            setText(""); // Очистить поле
-            fetchComments(); // Обновить список
+            setText(""); 
+            fetchComments(); 
         } catch (err) {
             alert("Ошибка 404: Проверьте, создан ли ресурс 'comments' в Mokky!");
         }
